@@ -5,5 +5,5 @@ import scala.concurrent.Future
 case class MyState()
 
 object MyState {
-  val applicationContext = ApplicationContext[Future, MyState, Any]
+  val globalContext = Context[Future, MyState, Any]
 }
