@@ -1,9 +1,10 @@
-import korolev.ApplicationContext
+import korolev.Context
 import korolev.execution._
 import scala.concurrent.Future
+import korolev.state.javaSerialization._
 
 case class MyState()
 
 object MyState {
-  val applicationContext = ApplicationContext[Future, MyState, Any]
+  val globalContext = Context[Future, MyState, Any]
 }
