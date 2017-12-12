@@ -13,7 +13,7 @@ object SimpleExample extends KorolevBlazeServer {
 
   val service = blazeService[Future, MyState, Any] from KorolevServiceConfig[Future, MyState, Any] (
     stateStorage = StateStorage.default(MyState()),
-    render = { case state => 'div("Hello world!") },
+    render = { case state => 'body("Hello world!") },
     serverRouter = ServerRouter.empty[Future, MyState]
   )
 }
