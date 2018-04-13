@@ -1,4 +1,4 @@
-import korolev.state.StateStorage
+import korolev._
 import korolev.server._
 import korolev.blazeServer._
 import korolev.execution._
@@ -14,7 +14,7 @@ object SimpleExample extends KorolevBlazeServer {
   val service = blazeService[Future, MyState, Any] from KorolevServiceConfig[Future, MyState, Any] (
     stateStorage = StateStorage.default(MyState()),
     render = { case state => 'body("Hello world!") },
-    serverRouter = ServerRouter.empty[Future, MyState]
+    router = emptyRouter
   )
 }
 
