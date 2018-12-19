@@ -1,21 +1,31 @@
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.stream.{ActorMaterializer, Materializer}
 import korolev._
-import korolev.server._
-import korolev.blazeServer._
+import korolev.akkahttp._
 import korolev.execution._
+import korolev.server._
 import korolev.state.javaSerialization._
 
 import scala.concurrent.Future
 
-object SimpleExample extends KorolevBlazeServer {
+object $name$ extends App {
+
+  private implicit val actorSystem: ActorSystem = ActorSystem()
+  private implicit val materializer: Materializer = ActorMaterializer()
+
+  val applicationContext = Context[Future, MyState, Any]
 
   import MyState.globalContext._
-  import MyState.globalContext.symbolDsl._
+  import symbolDsl._
 
-  val service = blazeService[Future, MyState, Any] from KorolevServiceConfig[Future, MyState, Any] (
+  private val config = KorolevServiceConfig[Future, MyState, Any](
     stateStorage = StateStorage.default(MyState()),
-    render = { case state => 'body("Hello world!") },
-    router = emptyRouter
+    router = emptyRouter,
+    render = { case _ => 'body("Hello world") }
   )
+
+  private val route = akkaHttpService(config).apply(AkkaHttpServerConfig())
+
+  Http().bindAndHandle(route, "0.0.0.0", 8080)
 }
-
-
