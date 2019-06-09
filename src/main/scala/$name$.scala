@@ -21,7 +21,7 @@ object $name$ extends App {
 
   private val config = KorolevServiceConfig[Future, MyState, Any](
     stateStorage = StateStorage.default(MyState()),
-    router = emptyRouter,
+    router = Router.empty,
     render = { case _ => 'body("Hello world") }
   )
 
