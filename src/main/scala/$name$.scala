@@ -17,12 +17,13 @@ object $name$ extends App {
   val applicationContext = Context[Future, MyState, Any]
 
   import MyState.globalContext._
-  import symbolDsl._
+  import levsha.dsl._
+  import html._
 
   private val config = KorolevServiceConfig[Future, MyState, Any](
     stateStorage = StateStorage.default(MyState()),
     router = Router.empty,
-    render = { case _ => 'body("Hello world") }
+    render = { case _ => body("Hello world") }
   )
 
   private val route = akkaHttpService(config).apply(AkkaHttpServerConfig())
