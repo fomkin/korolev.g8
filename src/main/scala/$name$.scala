@@ -21,9 +21,10 @@ object $name$ extends App {
   import html._
 
   private val config = KorolevServiceConfig[Future, MyState, Any](
-    stateStorage = StateStorage.default(MyState()),
-    router = Router.empty,
-    render = { case _ => body("Hello world") }
+    stateLoader = StateLoader.default(MyState()),
+    render = myState => optimize {
+      body("Hello world")
+    }
   )
 
   private val route = akkaHttpService(config).apply(AkkaHttpServerConfig())
