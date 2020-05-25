@@ -10,5 +10,5 @@ val korolevVersion = "$korolev_version$"
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.+",
-  "com.github.fomkin" %% "korolev-server-akkahttp" % korolevVersion
+  "com.github.fomkin" %% "korolev-akka" % korolevVersion
 )
