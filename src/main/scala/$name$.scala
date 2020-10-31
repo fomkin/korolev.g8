@@ -6,8 +6,12 @@ import korolev._
 import korolev.akka._
 import korolev.server._
 import korolev.state.javaSerialization._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 object $name$ extends App {
+
+  implicit val ec = ExecutionContext.global
 
   private implicit val actorSystem: ActorSystem = ActorSystem()
 
