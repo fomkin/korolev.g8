@@ -1,34 +1,51 @@
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.stream._
-import akka.stream.scaladsl._
-import korolev._
-import korolev.akka._
-import korolev.server._
-import korolev.state.javaSerialization._
+import korolev.*
+import korolev.server.*
+import korolev.state.javaSerialization.*
+import korolev.effect.*
+
+import levsha.dsl.*
+import levsha.dsl.html.*
+
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
-object $name$ extends App {
+case class State(
+    title: String = "Hello Korolev!",
+    items: Vector[String] = Vector("one", "two", "three")
+)
 
-  implicit val ec = ExecutionContext.global
+object $name$ extends KorolevApp[Future, Array[Byte], State, Any] {
 
-  private implicit val actorSystem: ActorSystem = ActorSystem()
+  import context.*
 
-  val applicationContext = Context[Future, MyState, Any]
+  private val newItemInput = elementId(Some("newItemInput"))
 
-  import MyState.globalContext._
-  import levsha.dsl._
-  import html._
+  private def onSubmit(access: Access): Future[Unit] =
+    for {
+      newItem <- access.valueOf(newItemInput)
+      _ <- access.transition(state =>
+        state.copy(items = state.items :+ newItem)
+      )
+    } yield ()
 
-  private val config = KorolevServiceConfig[Future, MyState, Any](
-    stateLoader = StateLoader.default(MyState()),
-    render = myState => optimize {
-      body("Hello world")
-    }
-  )
+  private def render(state: State): Node = optimize {
+    Html(
+      body(
+        div(clazz := "title", state.title),
+        ul(clazz := "list", state.items.map(item => li(clazz := "item", item))),
+        form(
+          input(newItemInput),
+          button("Add"),
+          event("submit")(onSubmit)
+        )
+      )
+    )
+  }
 
-  private val route = akkaHttpService(config).apply(AkkaHttpServerConfig())
-
-  Http().bindAndHandle(route, "0.0.0.0", 8080)
+  val config = Future.successful {
+    KorolevServiceConfig(
+      stateLoader = StateLoader.default(State()),
+      document = render
+    )
+  }
 }
+

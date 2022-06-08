@@ -9,6 +9,5 @@ scalaVersion := "$scala_version$"
 val korolevVersion = "$korolev_version$"
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.+",
-  "com.github.fomkin" %% "korolev-akka" % korolevVersion
+  "org.fomkin" %% "korolev-standalone" % korolevVersion
 )
